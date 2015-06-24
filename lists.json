@@ -1,0 +1,26 @@
+{
+  "clean": [
+    "dist",
+    "styles.html",
+    "index.html"
+  ],
+  "libs": [
+    "bower/webcomponentsjs/webcomponents-lite.js"
+  ],
+  "copy": [
+    "src/index.html",
+    "src/styles.html"
+  ],
+  "elements": [
+    "src/elements.html"
+  ],
+  "opts": {
+    "vulcan": {
+      "abspath": "",
+      "excludes": [],
+      "stripExcludes": false,
+      "inlineScripts": true,
+      "inlineCss": true
+    }
+  }
+}

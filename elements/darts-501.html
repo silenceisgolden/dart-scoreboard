@@ -1,0 +1,206 @@
+<link rel="import" href="../bower/polymer/polymer.html">
+<link rel="import" href="../bower/iron-flex-layout/classes/iron-flex-layout.html">
+<link rel="import" href="../bower/paper-input/paper-input.html">
+<link rel="import" href="../bower/iron-icons/iron-icons.html">
+<link rel="import" href="../bower/paper-fab/paper-fab.html">
+
+<dom-module id="darts-501">
+
+  <style>
+
+    :host {
+      position: relative;
+    }
+
+    .player-area {
+      padding: 5vh 1em;
+    }
+
+    .name-area paper-input::shadow #input {
+      font-size: 40px;
+    }
+
+    .name-area paper-input::shadow label {
+      font-size: 32px;
+      line-height: 40px;
+    }
+
+    .score-area {
+      padding: 5vh 0;
+    }
+
+    .enter-score paper-input::shadow #input {
+      font-size: 24px;
+      text-align: center;
+      line-height: 32px;
+    }
+
+    .score-display {
+      text-align: center;
+      font-size: 64px;
+    }
+
+    .scorelist {
+      position: relative;
+      height: 30vh;
+      padding: 0 15% 5vh 15%;
+      text-align: center;
+    }
+
+    .scorelist:after {
+      position: absolute;
+      left: 0;
+      bottom: 0;
+      width: 100%;
+      height: 8vh;
+      background: linear-gradient( to bottom, transparent, #fff 100% );
+      content: "";
+    }
+
+    paper-fab {
+      position: fixed;
+      bottom: 23px;
+      right: 23px;
+    }
+
+    @media only screen and (min-width: 800px) {
+      .enter-score {
+        padding: 0 15% 5vh 15%;
+      }
+
+      .enter-score paper-input::shadow #input {
+        font-size: 52px;
+        text-align: center;
+        line-height: 64px;
+      }
+    }
+
+  </style>
+
+  <template>
+
+    <section class="fit layout horizontal wrap">
+
+      <template is="dom-repeat" items="{{players}}" as="player">
+
+        <div class="player-area flex auto">
+          <section class="name-area">
+            <paper-input label="{{_computeNameLabel(index)}}" value="{{player.name}}"></paper-input>
+          </section>
+
+          <section class="score-area">
+            <div class="score-display">{{_computePlayerScore(player.throwlist, player.throwlist.*)}}</div>
+          </section>
+
+          <section class="enter-score">
+            <paper-input placeholder="Add a score" on-keyup="_handleKey"></paper-input>
+          </section>
+
+          <section class="scorelist scroll">
+            <template is="dom-repeat" items="{{player.throwlist}}" as="scoreitem">
+              <p>{{scoreitem}}</p>
+            </template>
+          </section>
+
+        </div>
+
+      </template>
+
+      <paper-fab on-tap="reset" icon="autorenew"></paper-fab>
+
+    </section>
+
+  </template>
+
+  <script>
+
+    Polymer({
+
+      is: 'darts-501',
+
+      properties: {
+
+        players: {
+          type: Array,
+          notify: true,
+          value: function() {
+            return [{
+              name: '',
+              throwlist: []
+            }, {
+              name: '',
+              throwlist: []
+            }];
+          }
+        }
+
+      },
+
+      _computeNameLabel: function( index ) {
+        return 'Player ' + (index + 1);
+      },
+
+      _computePlayerScore: function( list ) {
+        var score = 0;
+        for( var i = 0, l = list.length; i < l; i++ ) {
+          score += list[i];
+        }
+        return 501 - score;
+      },
+
+      _handleKey: function( e ) {
+        if( e.keyCode === 13 &&
+            e.target.value.length > 0 &&
+            Number(e.target.value) >= 0 &&
+            Number(e.target.value) <= 180 ) {
+          this._addScore( e );
+        }
+      },
+
+      _addScore: function( e ) {
+        var list = e.model.player.throwlist.slice(0);
+        var score = Number( e.target.value );
+        list.push( score );
+        var newscore = this._computePlayerScore( list );
+        if( newscore >= 0 ) {
+          this.unshift('players.' + e.model.index + '.throwlist', score);
+          e.target.value = '';
+          this._focusNext( e.model.index );
+        }
+        if( newscore === 0 ) {
+          this.async( this._gameOver );
+        }
+      },
+
+      _focusNext: function( currentIndex ) {
+        var index = currentIndex;
+        if( this.players[ index + 1 ] ) {
+          index += 1;
+        } else {
+          index = 0;
+        }
+        var inputs = Polymer.dom(this.root).querySelectorAll('.enter-score paper-input');
+        inputs[index].inputElement.focus();
+      },
+
+      _gameOver: function() {
+
+      },
+
+      reset: function() {
+        this.players = [
+          {
+            name: '',
+            throwlist: []
+          }, {
+            name: '',
+            throwlist: []
+          }
+        ];
+      }
+
+    });
+
+  </script>
+
+</dom-module>

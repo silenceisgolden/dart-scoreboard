@@ -1,0 +1,41 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="description" content="A free online dart scoreboard.">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Dart Scoreboard</title>
+
+  <script src="dist/lib/webcomponents-lite.js"></script>
+  <link rel="import" href="dist/elements.html">
+  <link rel="import" href="styles.html">
+</head>
+
+<body unresolved class="fullbleed relative layout vertical">
+  <span id="browser-sync-binding"></span>
+
+  <template is="dom-bind" id="app">
+
+    <paper-tabs selected="{{pagename}}">
+      <paper-tab>501</paper-tab>
+      <paper-tab>Cricket</paper-tab>
+    </paper-tabs>
+
+    <iron-pages selected="{{pagename}}" class="flex auto relative">
+
+      <darts-501 class="fit"></darts-501>
+
+      <div class="fit">Cricket - in progress</div>
+
+    </iron-pages>
+
+    <script>
+
+      var app = document.querySelector('#app');
+      app.pagename = '0';
+
+    </script>
+
+  </template>
+
+</body>
